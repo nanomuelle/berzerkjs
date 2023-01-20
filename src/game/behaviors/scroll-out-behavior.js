@@ -11,9 +11,7 @@ export class ScrollOutBehavior extends AbstractBehavior {
         super.run();
 
         e.tags = [];
-        e.CollisionComponent.collideWithTags = [];
-        e.DoorComponent = null;
-        e.InputComponent = null;
+        // e.CollisionComponent.collideWithTags = [];
 
         const velocityOut = {
             N: Vec2d.of( 0,  1),
@@ -23,6 +21,6 @@ export class ScrollOutBehavior extends AbstractBehavior {
         };
         e.PhysicsComponent.setVel(velocityOut[this.scrollDirection]);
         
-        this.state = 'end';
+        this.setStateEnd();
     }
 }

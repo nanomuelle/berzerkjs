@@ -66,23 +66,26 @@ export class LevelManager {
         this.createWalls();
         this.createDoors(usedEntry);
         this.createMaze();
-        createPlayer(this.em, usedEntry);
+        createPlayer(this.game, usedEntry);
     }
 
     finishScreen(usedEntry) {
         this._lastUsedEntry = usedEntry;
 
         this.em.forEach(e => {
+            e.CollisionComponent = null;
+            e.DoorComponent = null;
+            e.InputComponent = null;    
             const scrollOutBehavior = new ScrollOutBehavior(
                 this.game, 
                 new DestroyOnExitBehavior(this.game),
                 usedEntry
             )
-            e.BehaviorComponent = new BehaviorComponent(scrollOutBehavior);            
+            e.BehaviorComponent = new BehaviorComponent({ behavior: scrollOutBehavior });            
         });
     }
 
-    update(collisionSystem) {
+    update() {
         if (this.game.im.isKeyPressed('escape')) {
             console.log('ESCAPE!!!');
             this.game.finish();
@@ -94,39 +97,39 @@ export class LevelManager {
             return;
         }
 
-        const stopEntity = entity => {
-            entity.PhysicsComponent.restorePos();
-            entity.PhysicsComponent.setVel(Vec2d.of(0, 0));
-        };
+        // const stopEntity = entity => {
+        //     entity.PhysicsComponent.restorePos();
+        //     entity.PhysicsComponent.setVel(Vec2d.of(0, 0));
+        // };
 
-        const managePlayerCollision = (player, other) => {
-            if (other.tags.includes(TAGS.LETAL)) {
-                console.log('Game over!');
-                this.game.finish();
-                return;
-            }
+        // const managePlayerCollision = (player, other) => {
+        //     if (other.tags.includes(TAGS.LETAL)) {
+        //         console.log('Game over!');
+        //         this.game.finish();
+        //         return;
+        //     }
 
-            if (other.tags.includes(TAGS.EXIT)) {
-                const usedEntry = other.DoorComponent.dir;
-                this.finishScreen(usedEntry);
-                return;
-            }
-        };
+        //     if (other.tags.includes(TAGS.EXIT)) {
+        //         const usedEntry = other.DoorComponent.dir;
+        //         this.finishScreen(usedEntry);
+        //         return;
+        //     }
+        // };
 
-        collisionSystem.foreEachCollision(
-            ([a, b]) => {
-                if (a.tags.includes(TAGS.PLAYER)) {
-                    managePlayerCollision(a, b);
-                }
+        // collisionSystem.foreEachCollision(
+        //     ([a, b]) => {
+        //         if (a.tags.includes(TAGS.PLAYER)) {
+        //             managePlayerCollision(a, b);
+        //         }
 
-                if (a.tags.includes(TAGS.BULLET)) {
-                    this.em.destroy(a);
-                }
+        //         if (a.tags.includes(TAGS.BULLET)) {
+        //             this.em.destroy(a);
+        //         }
 
-                if (b.tags.includes(TAGS.SOLID)) {
-                    stopEntity(a);
-                }
-            }
-        )        
+        //         if (b.tags.includes(TAGS.SOLID)) {
+        //             stopEntity(a);
+        //         }
+        //     }
+        // )        
     }
 }

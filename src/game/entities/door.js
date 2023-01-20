@@ -10,12 +10,12 @@ export const createDoor = (entityManager, {pos, dir, size, isOpen}) => {
     };
 
     const data = {
-        tags: isOpen ? [ TAGS.TRIGGER, TAGS.EXIT ] : [ TAGS.SOLID ],
+        tags: isOpen ? [ TAGS.EXIT ] : [],
         components: {
             Physics: { pos },
-            Collision: { size },
+            Collision: { size, isSolid: true },
             Door: { dir },
-            Render: { sprites: [doorSprites[dir](isOpen)], index: 0 }
+            Render: { sprites: [doorSprites[dir](isOpen)], index: 0, size }
         }
     };
 

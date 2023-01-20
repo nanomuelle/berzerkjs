@@ -6,7 +6,7 @@ export class BehaviorSystem extends AbstractSystem {
         if (BehaviorComponent) {
             const { behavior } = BehaviorComponent;
             if (behavior) {
-                if (behavior.state === 'end') {
+                if (behavior.isStateEnd()) {
                     BehaviorComponent.behavior = behavior.nextBehavior;
                 } else {
                     behavior.run(entity);

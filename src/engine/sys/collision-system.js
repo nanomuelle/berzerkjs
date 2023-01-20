@@ -3,27 +3,27 @@ import { AbstractSystem } from "./abstract-system.js";
 const overlaps = (e1, e2) => {
     const { 
         PhysicsComponent: { pos: posA }, 
-        CollisionComponent: { collider: { pos: offsetA, size: sizeA } } 
+        CollisionComponent: { pos: offsetA, size: sizeA } 
     } = e1;
 
     const { 
         PhysicsComponent: { pos: posB }, 
-        CollisionComponent: { collider: { pos: offsetB, size: sizeB } } 
+        CollisionComponent: { pos: offsetB, size: sizeB } 
     } = e2;
 
-    if (posA.x + offsetA.x > posB.x + offsetB.x + sizeB.x - 1) {
+    if (posA.x + offsetA.x >= posB.x + offsetB.x + sizeB.x) {
         return false;
     }
 
-    if (posB.x + offsetB.x > posA.x + offsetA.x + sizeA.x - 1) {
+    if (posA.x + offsetA.x + sizeA.x <= posB.x + offsetB.x ) {
         return false;
     }
 
-    if (posA.y + offsetA.y > posB.y + offsetB.y + sizeB.y - 1) {
+    if (posA.y + offsetA.y >= posB.y + offsetB.y + sizeB.y) {
         return false;
     }
 
-    if (posB.y + offsetB.y > posA.y + offsetA.y + sizeA.y - 1) {
+    if (posA.y + offsetA.y + sizeA.y <= posB.y + offsetB.y ) {
         return false;
     }
 
@@ -32,18 +32,13 @@ const overlaps = (e1, e2) => {
 
 export class CollisionSystem extends AbstractSystem {
     checkCollision(e1, e2) {
-        const { CollisionComponent: { collideWithTags, collider: collider1 } } = e1;
-        const { tags, CollisionComponent: { collider: collider2 } } = e2;
+        // const { CollisionComponent: { collideWithTags } } = e1;
+        // const { tags } = e2;
 
-        if (!collider1 || !collider2) {
-            // console.log("NO COLLIDERS");
-            return false;
-        }
-
-        if (!collideWithTags.some(tag => tags.includes(tag) )) {
-            // console.log("NO COMPATIBLE TAGS");
-            return false;
-        }
+        // if (!collideWithTags.some(tag => tags.includes(tag) )) {
+        //     // console.log("NO COMPATIBLE TAGS");
+        //     return false;
+        // }
 
         if (!overlaps(e1, e2)) {
             return false;
@@ -52,24 +47,47 @@ export class CollisionSystem extends AbstractSystem {
         return true;
     };
 
-    updateOne(a, b) {
-        if (a.CollisionComponent && b.CollisionComponent) {
-            if (this.checkCollision(a, b)) {
-                this._collisions.push([a, b]);
+    updateOne(e1, e2) {
+        if (e1.CollisionComponent && e2.CollisionComponent && overlaps(e1, e2)) {
+            e1.CollisionComponent.addCollision(e2);
+            e2.CollisionComponent.addCollision(e1);
+
+            if (e2.CollisionComponent.isSolid) {
+                e1.PhysicsComponent.restorePos();
             }
 
-            if (this.checkCollision(b, a)) {
-                this._collisions.push([b, a]);
+            if (e1.CollisionComponent.isSolid) {
+                e2.PhysicsComponent.restorePos();
             }
+
+            // if (this.checkCollision(a, b)) {
+            //     a.CollisionComponent.addCollision(b);
+            //     if (b.PhysicsComponent.isSolid) {                    
+            //         a.PhysicsComponent.restorePos();
+            //         console.log('b isSolid!!', b)
+            //     }
+            //     // this._collisions.push([a, b]);
+            // }
+
+            // if (this.checkCollision(b, a)) {
+            //     b.CollisionComponent.addCollision(a);
+            //     if (a.PhysicsComponent.isSolid) {
+            //         b.PhysicsComponent.restorePos();
+            //         console.log('a isSolid!!', a)
+            //     }
+            //     // this._collisions.push([b, a]);
+            // }
         }
     }
 
     update(entityManager) {
-        this._collisions = [];
+        entityManager.forEach(entity => {
+            entity.CollisionComponent?.clearCollisions();
+        });
         entityManager.forEachPair(this.updateOne);
     }
 
-    foreEachCollision(fn) {
-        this._collisions.forEach(fn);
-    }
+    // foreEachCollision(fn) {
+    //     this._collisions.forEach(fn);
+    // }
 }

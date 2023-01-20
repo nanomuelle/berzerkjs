@@ -17,6 +17,7 @@ import { PhysicsComponent } from "./cmp/physics-component.js";
 import { CollisionComponent } from "./cmp/collision-component.js";
 import { DoorComponent } from "./cmp/door-component.js";
 import { InputComponent } from "./cmp/input-component.js";
+import { BehaviorComponent } from "./cmp/behavior-component.js";
 
 const createEntityManager = () => {
     const componentFactory = new ComponentFactory();
@@ -25,6 +26,7 @@ const createEntityManager = () => {
     componentFactory.addComponentBuilder('Collision', CollisionComponent);
     componentFactory.addComponentBuilder('Door', DoorComponent);
     componentFactory.addComponentBuilder('Input', InputComponent);
+    componentFactory.addComponentBuilder('Behavior', BehaviorComponent);
 
     return new EntityManager(Entity, componentFactory);
 }
@@ -48,11 +50,18 @@ export class Game {
 
     init() {
         this.im.init();
-        this.lm.loadLevel('E');
+        this.lm.loadLevel('N');
+    }
+
+    renderDebug() {
+        this.renderSystem._screen.printSprite(0, 0, [String(this.em.count())]);
+        this.renderSystem._screen.render();
     }
 
     step() {
         this.renderSystem.update(this.em);
+
+        this.renderDebug();
 
         this.inputSystem.update(this.em);
 
@@ -61,8 +70,8 @@ export class Game {
         this.physicsSystem.update(this.em);
         this.collisionSystem.update(this.em);
 
-        this.lm.update(this.collisionSystem);
-        this.em.update();
+        this.lm.update();
+        this.em.update();        
         this.im.update();
     }
 
