@@ -43,12 +43,12 @@ export class LevelManager {
     }
 
     createMaze() {
-        const pilars = [
+        const pillars = [
             [10, 4], [20, 4], [30, 4], [40, 4],
             [10, 9], [20, 9], [30, 9], [40, 9]
         ];
 
-        pilars.forEach(pilarPos => {
+        pillars.forEach(pilarPos => {
             const rnd = Math.random();
             if (rnd >= 0.75) {
                 createEWall(this.em, pilarPos);
