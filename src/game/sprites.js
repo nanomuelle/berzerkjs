@@ -12,6 +12,20 @@ const RED_CLOSED_BRICK_H = `${ CYAN }─`;
 const RED_CLOSED_BRICK_V = `${ CYAN }|`;
 
 export const SPRITES = {    
+    ANDROID: [
+        //  ╒═╕    ╒═╕    ╒═╕
+        // ▐▐█▌▌  ▐▐█▌▌  ▐▐█▌▌
+        //  ▐ ▌    ▀ ▌    ▐ ▀
+        //  ▀ ▀      ▀    ▀
+
+        // N
+        [
+            [`${ WHITE } `, '╒', '═', '╕', ' '],  //  ╒═╕
+            [`${ WHITE }▐`, '▐', '█', '▌', '▌'],  // ▐▐█▌▌
+            [`${ WHITE } `, '▐', ' ', '▌', ' '],  //  ▐ ▌
+            [`${ WHITE } `, '▀', ' ', '▀', ' ']   //  ▀ ▀
+        ]
+    ],
     PLAYER: [
         // N
         [
