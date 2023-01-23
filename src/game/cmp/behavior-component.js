@@ -1,5 +1,5 @@
 export class BehaviorComponent {
-    constructor(behavior) {
+    constructor({ behavior }) {
         this.behavior = behavior;
     }
 }

@@ -4,10 +4,27 @@ export class CollisionComponent {
     constructor(data) {
         // console.log('CollisionComponent constructor', data);
 
-        const pos = Vec2d.fromArray(data.pos);
-        const size = Vec2d.fromArray(data.size);
+        this.pos = Vec2d.fromArray(data.pos);
+        this.size = Vec2d.fromArray(data.size);
+        // this.collideWithTags = data.collideWithTags || []; // ['WALL'];
 
-        this.collideWithTags = data.collideWithTags || []; // ['WALL'];
-        this.collider = { pos, size };
+        this.isSolid = data.isSolid;
+        this.clearCollisions();
+    }
+
+    addCollision(entity) {
+        this._collisions.add(entity);
+    }
+
+    clearCollisions() {
+        this._collisions = new Set();
+    }
+
+    getCollisionCount() {
+        return this._collisions.size;
+    }
+
+    forEachCollision(fn) {
+        this._collisions.forEach(fn);
     }
 }
